@@ -172,13 +172,8 @@ project-cli-weather/
 4. Отправьте в ветку (`git push origin feature/amazing-feature`)
 5. Откройте Pull Request
 
-## 📄 Лицензия
-
-Этот проект лицензирован под лицензией ISC. Подробности см. в файле [LICENSE](LICENSE).
-
 ## 👤 Автор
 
 **Pavel Kochetkov**
 - GitHub: [@PavelKochetkov](https://github.com/PavelKochetkov)
-- Проект: [project-cli-weather](https://github.com/PavelKochetkov/project-cli-weather)
-
+- Telegram: [@PavelKochetkov](https://t.me/PKochetkov)
