@@ -1,0 +1,28 @@
+{
+  "name": "project-cli-weather",
+  "version": "1.0.0",
+  "description": "project-CLI-weather",
+  "homepage": "https://github.com/PavelKochetkov/project-cli-weather#readme",
+  "bugs": {
+    "url": "https://github.com/PavelKochetkov/project-cli-weather/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PavelKochetkov/project-cli-weather.git"
+  },
+  "license": "ISC",
+  "author": "Pavel Kochetkov",
+  "type": "module",
+  "main": "weather.js",
+  "bin": {
+    "weather": "weather.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.16.0",
+    "chalk": "^5.6.2",
+    "dedent-js": "^1.0.1"
+  }
+}
