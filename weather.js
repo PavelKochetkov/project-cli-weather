@@ -2,7 +2,7 @@
 import { getArgs } from './helpers/args_helper.js';
 import { getWeather, getIcon } from './services/api.service.js';
 import { printHelp, printSuccess, printError, printWeather } from './services/log.service.js';
-import { saveKeyValue, TOKEN_DICTIONARY, getKeyValue } from './services/storage.service.js';
+import { saveKeyValue, TOKEN_DICTIONARY, getKeyValue, addCity, getCities } from './services/storage.service.js';
 
 const saveToken = async (token, language) => {
   if (!token.length) {
@@ -25,8 +25,8 @@ const saveCity = async (city, language) => {
   }
 
   try {
-    await saveKeyValue(TOKEN_DICTIONARY.city, city);
-    language === 'ru' ? printSuccess('Город сохранён') : printSuccess('City saved');
+    await addCity(city);
+    language === 'ru' ? printSuccess(`Город "${city}" добавлен`) : printSuccess(`City "${city}" added`);
   } catch(e) {
     printError(e.message);
   }
@@ -48,20 +48,37 @@ const saveLanguage = async (language, langStore) => {
 
 const getForecast = async () => {
   try {
-    const city = process.env.CITY ?? await getKeyValue(TOKEN_DICTIONARY.city);
     const language = process.env.LANGUAGE ?? await getKeyValue(TOKEN_DICTIONARY.language);
-    const weather = await getWeather(city, language);
-    printWeather(weather, getIcon(weather.weather[0].icon), language);
-  } catch (e) {
-      const language = process.env.LANGUAGE ?? await getKeyValue(TOKEN_DICTIONARY.language);
-      if (e?.response?.status == 404) {
-        language === 'ru' ? printError('Неверно указан город') : printError('The city is incorrectly specified');
-      } else if (e?.response?.status == 401) {
-        language === 'ru' ? printError('Неверно указан токен') : printError('Token is incorrect');
+    const cities = await getCities();
+    let targetCities = cities;
+    if (targetCities.length === 0) {
+      const singleCity = process.env.CITY ?? await getKeyValue(TOKEN_DICTIONARY.city);
+      if (singleCity) {
+        targetCities = [singleCity];
       } else {
-        printError(e.message);
+        language === 'ru' ? printError('Не указан город. Используйте -s [CITY] для добавления города.') : printError('No city specified. Use -s [CITY] to add a city.');
+        return;
       }
     }
+    
+    for (const city of targetCities) {
+      try {
+        const weather = await getWeather(city, language);
+        printWeather(weather, getIcon(weather.weather[0].icon), language);
+      } catch (e) {
+        if (e?.response?.status == 404) {
+          language === 'ru' ? printError(`Город "${city}" не найден`) : printError(`City "${city}" not found`);
+        } else if (e?.response?.status == 401) {
+          language === 'ru' ? printError('Неверно указан токен') : printError('Token is incorrect');
+          break;
+        } else {
+          language === 'ru' ? printError(`Ошибка для города "${city}": ${e.message}`) : printError(`Error for city "${city}": ${e.message}`);
+        }
+      }
+    }
+  } catch (e) {
+    printError(e.message);
+  }
 };
 
 const initCLI = async () => {
@@ -73,7 +90,11 @@ const initCLI = async () => {
   }
 
   if (args.s) {
-    return saveCity(args.s, language);
+    const cities = Array.isArray(args.s) ? args.s : [args.s];
+    for (const city of cities) {
+      await saveCity(city, language);
+    }
+    return;
   }
 
   if (args.t) {

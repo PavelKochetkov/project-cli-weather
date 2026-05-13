@@ -13,8 +13,8 @@ const printHelp = (language = 'en') => {
   if (language == 'ru') {
     console.log(
       dedent`${chalk.bgCyan(' HELP ')}
-       Без параметров - вывод погоды
-      -s [CITY] для установки города
+       Без параметров - вывод погоды для всех сохранённых городов
+      -s [CITY] для добавления города (можно указать несколько раз)
       -h для вывода помощи
       -t [API_KEY] для сохранения токена
       -l [LANGUAGE] для сохранения языка (en, ru)
@@ -23,14 +23,14 @@ const printHelp = (language = 'en') => {
   } else {
     console.log(
       dedent`${chalk.bgCyan(' HELP ')}
-       No parameters - output weather
-      -s [CITY] to set city
+       No parameters - output weather for all saved cities
+      -s [CITY] to add a city (can be used multiple times)
       -h for help
       -t [API_KEY] to save token
       -l [LANGUAGE] to save language (en, ru)
       `
     );
-  }  
+  }
 };
 
 const printWeather = (res, icon, language = 'en') => {
