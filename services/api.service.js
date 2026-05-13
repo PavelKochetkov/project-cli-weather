@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getKeyValue, TOKEN_DICTIONARY } from './storage.service.js';
 
-const getWeather = async (city) => {
+const getWeather = async (city, language = 'en') => {
   const token = await getKeyValue(TOKEN_DICTIONARY.token);
 
   if (!token) {
@@ -12,7 +12,7 @@ const getWeather = async (city) => {
     params: {
       q: city,
       appid: token,
-      lang: 'ru',
+      lang: language,
       units: 'metric'
     }
   });
